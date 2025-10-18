@@ -1,0 +1,27 @@
+<template>
+  <div
+    class="sticky shadow top-0 z-50 bg-white flex items-center justify-between gap-2 p-3"
+  >
+    <h3 class="font-medium text-xl">Todo List</h3>
+
+    <button @click="handleLogout">
+      <ArrowLeftStartOnRectangleIcon
+        class="size-5 text-red-500"
+      ></ArrowLeftStartOnRectangleIcon>
+    </button>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useAuthStore } from "@/modules/auth/auth.store";
+import { useRouter } from "vue-router";
+import { ArrowLeftStartOnRectangleIcon } from "@heroicons/vue/24/solid";
+
+const auth = useAuthStore();
+const router = useRouter();
+
+function handleLogout() {
+  auth.logout();
+  router.push("/login");
+}
+</script>
