@@ -11,7 +11,11 @@
           @change="selectedPriority = $event"
         />
 
-        <TodosList :todos="filteredTodos" @select-todo="handleSelectTodo" />
+        <TodosList
+          v-memo="filteredTodos"
+          :todos="filteredTodos"
+          @select-todo="handleSelectTodo"
+        />
       </div>
 
       <TodoUpdateForm v-if="selectedTodo" :todo="selectedTodo" />

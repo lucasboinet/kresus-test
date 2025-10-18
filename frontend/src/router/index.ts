@@ -1,28 +1,27 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import TodosDashboard from "@/modules/todos/pages/TodosDashboard.vue";
-import Login from "@/modules/auth/pages/Login.vue";
-import Register from "@/modules/auth/pages/Register.vue";
-import AuthLayout from "@/modules/auth/layouts/Authenticated.vue";
-
 const routes = [
   {
     path: "/",
-    component: AuthLayout,
+    component: () => import("@/modules/auth/layouts/Authenticated.vue"),
     children: [
       {
         path: "",
         name: "todos-dashboard",
-        component: TodosDashboard,
+        component: () => import("@/modules/todos/pages/TodosDashboard.vue"),
       },
     ],
   },
   {
     path: "/login",
     name: "login",
-    component: Login,
+    component: () => import("@/modules/auth/pages/Login.vue"),
   },
-  { path: "/register", name: "register", component: Register },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("@/modules/auth/pages/Register.vue"),
+  },
 ];
 
 export const router = createRouter({

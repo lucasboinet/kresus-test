@@ -6,25 +6,25 @@
 
         <div class="space-y-3 mb-6">
           <TextInput
-            v-model="email"
+            v-model="form.email"
             type="email"
+            label="Email"
             placeholder="Email"
-            required
             :disabled="loading"
+            :error="getError('email')"
           />
 
           <TextInput
-            v-model="password"
+            v-model="form.password"
             type="password"
+            label="Mot de passe"
             placeholder="Mot de passe"
-            required
+            :error="getError('password')"
             :disabled="loading"
           />
         </div>
 
         <Button type="submit" :loading="loading">Se connecter</Button>
-
-        <p v-if="error" class="text-red-500 mt-3 text-center">{{ error }}</p>
 
         <p class="mt-4 text-sm text-center">
           Pas encore de compte?
@@ -40,30 +40,48 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/modules/auth/auth.store";
 import axios from "axios";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import Button from "@/components/Button.vue";
 import TextInput from "@/components/TextInput.vue";
 import Card from "@/components/Card.vue";
+import {
+  FORM_VALIDATION_RULES,
+  useFormValidation,
+} from "@/composables/useFormValidation";
 
-const email = ref("");
-const password = ref("");
 const loading = ref(false);
-const error = ref<string>("");
 const router = useRouter();
 const auth = useAuthStore();
 
+const form = reactive({
+  email: "",
+  password: "",
+});
+
+const { getError, validateForm, resetErrors } = useFormValidation(form, {
+  email: [
+    FORM_VALIDATION_RULES.required("L'email est requis"),
+    FORM_VALIDATION_RULES.email(),
+  ],
+  password: [FORM_VALIDATION_RULES.required("Le mot de passe est requis")],
+});
+
 const handleLogin = async () => {
-  error.value = "";
+  resetErrors();
+  if (!validateForm()) {
+    return;
+  }
+
   loading.value = true;
   try {
-    await auth.login({ email: email.value, password: password.value });
+    await auth.login({ ...form });
     router.push("/");
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
-      error.value = err.response?.data?.message;
+      console.log(err.response?.data?.message);
     } else {
-      error.value = "La connection à échoué, veuillez réessayer";
+      console.log("La connection à échoué, veuillez réessayer");
     }
   } finally {
     loading.value = false;

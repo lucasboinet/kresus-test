@@ -6,33 +6,34 @@
 
         <div class="space-y-3 mb-6">
           <TextInput
-            v-model="email"
+            v-model="form.email"
+            label="Email"
             type="email"
             placeholder="Email"
-            required
+            :error="getError('email')"
             :disabled="loading"
           />
 
           <TextInput
-            v-model="password"
+            v-model="form.password"
+            label="Mot de passe"
             type="password"
-            placeholder="Mot de passe (min 6)"
-            required
+            :placeholder="`Mot de passe (min ${PASSWORD_LENGTH})`"
+            :error="getError('password')"
             :disabled="loading"
           />
 
           <TextInput
-            v-model="confirmPassword"
+            v-model="form.confirmPassword"
+            label="Confirmez votre mot de passer"
             type="password"
-            placeholder="Confirmer votre mot de passe"
-            required
+            placeholder="Mot de passe"
+            :error="getError('confirmPassword')"
             :disabled="loading"
           />
         </div>
 
         <Button type="submit" :loading="loading">S'enregistrer</Button>
-
-        <p v-if="error" class="text-red-500 mt-3 text-center">{{ error }}</p>
 
         <p class="mt-4 text-sm text-center">
           Déjà un compte?
@@ -46,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import Button from "@/components/Button.vue";
@@ -54,29 +55,48 @@ import axios from "axios";
 import TextInput from "@/components/TextInput.vue";
 import Card from "@/components/Card.vue";
 import { PASSWORD_LENGTH } from "../auth.constants";
+import {
+  FORM_VALIDATION_RULES,
+  useFormValidation,
+} from "@/composables/useFormValidation";
 
-const email = ref("");
-const password = ref("");
-const confirmPassword = ref("");
+const form = reactive({
+  email: "",
+  password: "",
+  confirmPassword: "",
+});
+
+const { getError, validateForm, resetErrors } = useFormValidation(form, {
+  email: [
+    FORM_VALIDATION_RULES.required("L'email est requis"),
+    FORM_VALIDATION_RULES.email(),
+  ],
+  password: [
+    FORM_VALIDATION_RULES.required("Le mot de passe est requis"),
+    FORM_VALIDATION_RULES.minLength(PASSWORD_LENGTH),
+  ],
+  confirmPassword: [
+    FORM_VALIDATION_RULES.required("Veuillez confirmer votre mot de passe"),
+    FORM_VALIDATION_RULES.match(
+      form.confirmPassword,
+      "Les mots de passe ne correspondent pas",
+    ),
+  ],
+});
+
 const loading = ref(false);
-const error = ref(null);
 const router = useRouter();
 const auth = useAuthStore();
 
 const handleRegister = async () => {
-  error.value = null;
+  resetErrors();
+
+  if (!validateForm()) {
+    return;
+  }
+
   loading.value = true;
   try {
-    if (password.value.length < PASSWORD_LENGTH) {
-      error.value = `Le mot de passe doit faire au moins ${PASSWORD_LENGTH} caractères`;
-      return;
-    }
-
-    if (password.value !== confirmPassword.value) {
-      error.value = "Les mots de passe doivent être les mêmes";
-      return;
-    }
-
     await auth.register({
       email: email.value,
       password: password.value,
@@ -85,9 +105,9 @@ const handleRegister = async () => {
     router.push("/");
   } catch (err) {
     if (axios.isAxiosError(err)) {
-      error.value = err.response?.data?.message;
+      console.log(err.response?.data?.message);
     } else {
-      error.value = "L'enregistrement à échoué, veuillez réessayer";
+      console.log("L'enregistrement à échoué, veuillez réessayer");
     }
   } finally {
     loading.value = false;

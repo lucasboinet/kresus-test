@@ -73,13 +73,18 @@
 
         <Card title="Modifier la todo">
           <form class="space-y-4" @submit.prevent="handleUpdateTodo">
-            <TextInput v-model="form.title" label="Titre" />
+            <TextInput
+              v-model="form.title"
+              label="Titre"
+              :error="getError('title')"
+            />
             <div class="flex gap-2 items-center">
               <TextInput
                 v-model="form.executionDate"
                 :disabled="loading"
                 label="Date d'éxécution"
                 type="datetime-local"
+                :error="getError('executionDate')"
               />
 
               <div class="w-56">
@@ -87,23 +92,17 @@
                   v-model="form.priority"
                   label="Priorité"
                   :items="PRIORITIES"
+                  :disabled="loading"
                 />
               </div>
             </div>
-            <div>
-              <label
-                for="editContent"
-                class="block text-sm font-medium text-slate-700 mb-2"
-                >Description</label
-              >
-              <textarea
-                v-model="form.content"
-                name="editContent"
-                rows="5"
-                required
-                class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition resize-none"
-              ></textarea>
-            </div>
+
+            <TextareaInput
+              v-model="form.content"
+              label="Description"
+              :error="getError('content')"
+              :disabled="loading"
+            />
             <Button type="submit" :loading="loading">Sauvegarder</Button>
           </form>
         </Card>
@@ -123,7 +122,16 @@ import { reactive, ref, watchEffect } from "vue";
 import { useTodosStore } from "../todos.store";
 import CheckboxInput from "@/components/CheckboxInput.vue";
 import SelectInput from "@/components/SelectInput.vue";
-import { PRIORITIES } from "../todos.constants";
+import {
+  PRIORITIES,
+  TODO_DESCRIPTION_LENGTH,
+  TODO_TITLE_LENGTH,
+} from "../todos.constants";
+import {
+  FORM_VALIDATION_RULES,
+  useFormValidation,
+} from "@/composables/useFormValidation";
+import TextareaInput from "@/components/TextareaInput.vue";
 
 interface Props {
   todo: Todo;
@@ -134,7 +142,7 @@ const todos = useTodosStore();
 
 const loading = ref(false);
 
-const form = reactive<Partial<Todo>>({
+const form = reactive<Omit<Todo, "id" | "userId">>({
   title: "",
   content: "",
   priority: TodoPriorityType.LOW,
@@ -142,7 +150,23 @@ const form = reactive<Partial<Todo>>({
   completedAt: null,
 });
 
+const { getError, validateForm, resetErrors } = useFormValidation(form, {
+  title: [
+    FORM_VALIDATION_RULES.required("Le titre est requis"),
+    FORM_VALIDATION_RULES.maxLength(TODO_TITLE_LENGTH),
+  ],
+  content: [
+    FORM_VALIDATION_RULES.required("La description est requise"),
+    FORM_VALIDATION_RULES.maxLength(TODO_DESCRIPTION_LENGTH),
+  ],
+  priority: [FORM_VALIDATION_RULES.required("La priorité est requise")],
+});
+
 async function handleUpdateTodo() {
+  resetErrors();
+
+  if (!validateForm()) return;
+
   loading.value = true;
   try {
     await todos.updateTodo(props.todo.id, {

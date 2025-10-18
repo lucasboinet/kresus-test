@@ -22,4 +22,4 @@ export const PRIORITIES = [
 ];
 
 export const TODO_TITLE_LENGTH = 50;
-export const TODO_DESCRIPTION_LENGTH = 50;
+export const TODO_DESCRIPTION_LENGTH = 256;

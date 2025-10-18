@@ -18,7 +18,8 @@ export const useTodosStore = defineStore("todos", () => {
         ? { executionDate: new Date(payload.executionDate).toISOString() }
         : {}),
     });
-    todos.value = todos.value.map((t) => (t.id === res.data.id ? res.data : t));
+    const todoIndex = todos.value.findIndex((t) => t.id === res.data.id);
+    todos.value[todoIndex] = res.data;
   }
 
   async function deleteTodo(todoId: Todo["id"]) {

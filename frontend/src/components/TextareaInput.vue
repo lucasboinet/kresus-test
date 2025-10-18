@@ -4,17 +4,17 @@
       {{ label }} <span v-if="required" class="text-red-500">*</span>
     </label>
 
-    <input
-      class="w-full px-3 py-2 border rounded-md text-gray-800 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-100 disabled:cursor-not-allowed border-gray-300 transition"
-      :type="type || 'text'"
-      :placeholder="placeholder"
+    <textarea
+      :value="modelValue"
+      name="editContent"
       :disabled="disabled"
       :required="required"
-      :value="modelValue"
+      rows="5"
+      class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition resize-none"
       @input="
         $emit('update:modelValue', ($event.target as HTMLInputElement).value)
       "
-    />
+    ></textarea>
 
     <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
   </div>
@@ -22,10 +22,8 @@
 
 <script setup lang="ts">
 interface Props {
-  modelValue: string | undefined | null | Date;
+  modelValue: string | undefined;
   label?: string;
-  placeholder?: string;
-  type?: string;
   error?: string;
   disabled?: boolean;
   required?: boolean;

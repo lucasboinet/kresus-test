@@ -57,17 +57,17 @@
               <form @submit.prevent="handleSubmit" class="space-y-5">
                 <TextInput
                   v-model="form.title"
-                  :error="errors.title"
                   :disabled="loading"
                   label="Titre"
+                  :error="getError('title')"
                   placeholder="Titre de la todo"
-                  required
                 />
 
                 <SelectInput
                   v-model="form.priority"
                   :disabled="loading"
                   label="Priorité"
+                  :error="getError('priority')"
                   :items="PRIORITIES"
                 />
 
@@ -78,26 +78,12 @@
                   type="datetime-local"
                 />
 
-                <div>
-                  <label
-                    for="content"
-                    class="text-sm font-medium text-gray-700"
-                  >
-                    Description <span class="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    v-model="form.content"
-                    name="content"
-                    required
-                    :disabled="loading"
-                    rows="5"
-                    placeholder="Description de la todo"
-                    class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-1 focus:ring-green-500 focus:border-transparent outline-none transition resize-none"
-                  ></textarea>
-                  <p v-if="errors.content" class="mt-1 text-sm text-red-500">
-                    {{ errors.content }}
-                  </p>
-                </div>
+                <TextareaInput
+                  v-model="form.content"
+                  label="Description"
+                  :error="getError('content')"
+                  :disabled="loading"
+                />
 
                 <div class="flex gap-3 pt-4">
                   <Button
@@ -138,6 +124,11 @@ import {
   TODO_TITLE_LENGTH,
 } from "../todos.constants";
 import axios from "axios";
+import {
+  FORM_VALIDATION_RULES,
+  useFormValidation,
+} from "@/composables/useFormValidation";
+import TextareaInput from "@/components/TextareaInput.vue";
 
 const emit = defineEmits(["close", "submit"]);
 const props = defineProps({
@@ -148,7 +139,6 @@ const props = defineProps({
 });
 
 const todos = useTodosStore();
-
 const loading = ref(false);
 
 const form = reactive({
@@ -158,36 +148,27 @@ const form = reactive({
   executionDate: null,
 });
 
-const errors = reactive({
-  title: "",
-  content: "",
-});
-
 const resetForm = () => {
   form.title = "";
   form.content = "";
   form.priority = TodoPriority.MEDIUM;
   form.executionDate = null;
-  errors.title = "";
-  errors.content = "";
 };
 
-const validateForm = () => {
-  errors.title = "";
-  errors.content = "";
-
-  if (form.title.length >= TODO_TITLE_LENGTH) {
-    errors.title = `Le titre ne doit pas dépasser ${TODO_TITLE_LENGTH} caractères`;
-  }
-
-  if (form.content.length >= TODO_DESCRIPTION_LENGTH) {
-    errors.content = `Le description ne doit pas dépasser ${TODO_DESCRIPTION_LENGTH} caractères`;
-  }
-
-  return !Object.values(errors).find((e) => !!e || e !== "");
-};
+const { getError, validateForm, resetErrors } = useFormValidation(form, {
+  title: [
+    FORM_VALIDATION_RULES.required("Le titre est requis"),
+    FORM_VALIDATION_RULES.maxLength(TODO_TITLE_LENGTH),
+  ],
+  content: [
+    FORM_VALIDATION_RULES.required("La description est requise"),
+    FORM_VALIDATION_RULES.maxLength(TODO_DESCRIPTION_LENGTH),
+  ],
+  priority: [FORM_VALIDATION_RULES.required("La priorité est requise")],
+});
 
 const handleSubmit = async () => {
+  resetErrors();
   if (!validateForm()) return;
 
   loading.value = true;
@@ -216,7 +197,6 @@ const handleSubmit = async () => {
 const closeModal = () => {
   if (!loading.value) {
     emit("close");
-    resetForm();
   }
 };
 
@@ -229,6 +209,7 @@ watch(
   (newVal) => {
     if (!newVal) {
       resetForm();
+      resetErrors();
     }
   },
 );
