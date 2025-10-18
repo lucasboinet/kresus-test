@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div v-if="isReady" class="min-h-screen bg-gray-50">
+    <div v-if="!loading" class="min-h-screen bg-gray-50">
       <Navbar />
       <router-view></router-view>
     </div>
     <div v-else class="flex items-center justify-center h-screen">
-      <p>Chargement...</p>
+      <CubeTransparentIcon class="text-green-500 size-10 animate-spin" />
     </div>
   </div>
 </template>
@@ -15,10 +15,11 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import Navbar from "@/components/Navbar.vue";
+import { CubeTransparentIcon } from "@heroicons/vue/24/outline";
 
 const auth = useAuthStore();
 const router = useRouter();
-const isReady = ref(false);
+const loading = ref(true);
 
 onMounted(async () => {
   const token = localStorage.getItem("token");
@@ -29,7 +30,7 @@ onMounted(async () => {
 
   try {
     await auth.fetchUser();
-    isReady.value = true;
+    loading.value = false;
   } catch {
     auth.logout();
     router.push("/login");

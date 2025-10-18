@@ -9,11 +9,15 @@
       <slot />
     </div>
 
-    <span v-else class="flex items-center gap-2">Chargement...</span>
+    <span v-else class="flex items-center gap-2">
+      <CubeTransparentIcon class="text-white size-5 animate-spin" />
+    </span>
   </button>
 </template>
 
 <script setup lang="ts">
+import { CubeTransparentIcon } from "@heroicons/vue/24/solid";
+
 interface Props {
   loading?: boolean;
   disabled?: boolean;
