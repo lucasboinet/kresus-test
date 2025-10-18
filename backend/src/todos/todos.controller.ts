@@ -33,7 +33,6 @@ export class TodosController {
     @UserDecorator() user,
     @Body() createPayload: CreateTodoPayload,
   ): Promise<Todo> {
-    console.log({ createPayload });
     return this.todosService.createTodo(user.id, createPayload);
   }
 
