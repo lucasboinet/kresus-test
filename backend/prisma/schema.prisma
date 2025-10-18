@@ -9,9 +9,23 @@ generator client {
 }
 
 model Todo {
-  id    Int     @id @default(autoincrement())
-  title String  @unique
-  content  String
-  priority String
+  id            Int       @id @default(autoincrement())
+  title         String    @unique
+  content       String
+  priority      String
   executionDate DateTime?
+  completedAt   DateTime?
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  todos Todo[]
 }
