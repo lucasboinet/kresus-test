@@ -21,12 +21,15 @@
 import { useAuthStore } from "@/modules/auth/auth.store";
 import { useRouter } from "vue-router";
 import { ArrowLeftStartOnRectangleIcon } from "@heroicons/vue/24/solid";
+import { useToast } from "@/composables/useToast";
 
 const auth = useAuthStore();
 const router = useRouter();
+const toast = useToast();
 
 function handleLogout() {
   auth.logout();
   router.push("/login");
+  toast.success("Déconnecté avec succès");
 }
 </script>

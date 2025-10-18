@@ -41,6 +41,7 @@ import { useTodosStore } from "../todos.store";
 import TodoPriority from "./TodoPriority.vue";
 import CheckboxInput from "@/components/CheckboxInput.vue";
 import { CalendarIcon } from "@heroicons/vue/24/outline";
+import { useToast } from "@/composables/useToast";
 
 interface Props {
   todo: Todo;
@@ -48,6 +49,7 @@ interface Props {
 
 const props = defineProps<Props>();
 const todos = useTodosStore();
+const toast = useToast();
 
 const isCompleted = computed(() => !!props.todo.completedAt);
 
@@ -56,8 +58,11 @@ async function handleCompleteTodo(checked: boolean) {
     await todos.updateTodo(props.todo.id, {
       completedAt: checked ? new Date() : null,
     });
+    toast.success(checked ? "La todo complété" : "La todo n'est plus complété");
   } catch (err) {
-    console.log(err);
+    toast.error(
+      "Une erreur s'est produit lors du changement d'étât de la todo",
+    );
   }
 }
 </script>

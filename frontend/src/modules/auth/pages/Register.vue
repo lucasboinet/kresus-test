@@ -59,6 +59,7 @@ import {
   FORM_VALIDATION_RULES,
   useFormValidation,
 } from "@/composables/useFormValidation";
+import { useToast } from "@/composables/useToast";
 
 const form = reactive({
   email: "",
@@ -87,6 +88,7 @@ const { getError, validateForm, resetErrors } = useFormValidation(form, {
 const loading = ref(false);
 const router = useRouter();
 const auth = useAuthStore();
+const toast = useToast();
 
 const handleRegister = async () => {
   resetErrors();
@@ -103,11 +105,12 @@ const handleRegister = async () => {
       confirmPassword: confirmPassword.value,
     });
     router.push("/");
+    toast.success("Bienvenue");
   } catch (err) {
     if (axios.isAxiosError(err)) {
-      console.log(err.response?.data?.message);
+      toast.error(err.response?.data?.message);
     } else {
-      console.log("L'enregistrement à échoué, veuillez réessayer");
+      toast.error("L'enregistrement à échoué, veuillez réessayer");
     }
   } finally {
     loading.value = false;

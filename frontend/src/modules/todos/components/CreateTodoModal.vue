@@ -120,6 +120,7 @@ import {
 } from "@/composables/useFormValidation";
 import TextareaInput from "@/components/TextareaInput.vue";
 import { XMarkIcon } from "@heroicons/vue/24/solid";
+import { useToast } from "@/composables/useToast";
 
 const emit = defineEmits(["close", "submit"]);
 const props = defineProps({
@@ -129,6 +130,7 @@ const props = defineProps({
   },
 });
 
+const toast = useToast();
 const todos = useTodosStore();
 const loading = ref(false);
 
@@ -173,11 +175,14 @@ const handleSubmit = async () => {
     };
 
     await todos.createTodo(data);
+    toast.success("Todo crée avec succès");
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data?.message);
+      toast.error(error.response?.data?.message);
     } else {
-      console.error(error);
+      toast.error(
+        "Une erreur innatendu s'est produit lors de la création de la todo",
+      );
     }
   } finally {
     loading.value = false;

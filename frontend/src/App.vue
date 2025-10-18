@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import Toast from "@/modules/toasts/components/Toast.vue";
+</script>
+
 <template>
-  <RouterView />
+  <router-view />
+  <Toast />
 </template>

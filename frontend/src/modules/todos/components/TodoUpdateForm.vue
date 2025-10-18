@@ -106,6 +106,8 @@ import {
 } from "@/composables/useFormValidation";
 import TextareaInput from "@/components/TextareaInput.vue";
 import { CalendarIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { useToast } from "@/composables/useToast";
+import axios from "axios";
 
 interface Props {
   todo: Todo;
@@ -113,6 +115,7 @@ interface Props {
 
 const props = defineProps<Props>();
 const todos = useTodosStore();
+const toast = useToast();
 
 const loading = ref(false);
 
@@ -147,8 +150,15 @@ async function handleUpdateTodo() {
       ...form,
       executionDate: form.executionDate ?? null,
     });
+    toast.success("Todo mis à jour avec succès");
   } catch (err) {
-    console.log(err);
+    if (axios.isAxiosError(err)) {
+      toast.error(err.response?.data?.message);
+    } else {
+      toast.error(
+        "Une erreur innatendu s'est produit lors de la mise à jour de la todo",
+      );
+    }
   } finally {
     loading.value = false;
   }
@@ -158,8 +168,9 @@ async function handleDeleteTodo() {
   loading.value = true;
   try {
     await todos.deleteTodo(props.todo.id);
+    toast.success("Todo supprimé avec succès");
   } catch (err) {
-    console.log(err);
+    toast.error("Une erreur s'est produit lors de la suppression de la todo");
   } finally {
     loading.value = false;
   }

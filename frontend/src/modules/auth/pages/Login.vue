@@ -49,10 +49,12 @@ import {
   FORM_VALIDATION_RULES,
   useFormValidation,
 } from "@/composables/useFormValidation";
+import { useToast } from "@/composables/useToast";
 
 const loading = ref(false);
 const router = useRouter();
 const auth = useAuthStore();
+const toast = useToast();
 
 const form = reactive({
   email: "",
@@ -77,11 +79,12 @@ const handleLogin = async () => {
   try {
     await auth.login({ ...form });
     router.push("/");
+    toast.success("Connecté avec succès");
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
-      console.log(err.response?.data?.message);
+      toast.error(err.response?.data?.message);
     } else {
-      console.log("La connection à échoué, veuillez réessayer");
+      toast.error("La connection à échoué, veuillez réessayer");
     }
   } finally {
     loading.value = false;
