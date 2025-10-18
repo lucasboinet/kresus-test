@@ -3,7 +3,9 @@
     <div class="flex h-screen overflow-hidden">
       <div class="w-96 border-r border-slate-200 bg-white flex flex-col">
         <div class="p-4 border-b border-slate-200">
-          <Button @click="openCreateTodoModal = true">Nouvelle todo</Button>
+          <Button @click="openCreateTodoModal = true">
+            <PlusIcon class="text-white size-6" /> Nouvelle todo</Button
+          >
         </div>
 
         <TodosPriorityFilter
@@ -23,21 +25,9 @@
       <div v-else class="flex-1 flex items-center justify-center p-8">
         <div class="text-center max-w-md">
           <div
-            class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6"
+            class="bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6"
           >
-            <svg
-              class="w-12 h-12 text-slate-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-              ></path>
-            </svg>
+            <ClipboardIcon class="size-10" />
           </div>
           <h2 class="text-2xl font-bold text-slate-800 mb-2">
             Selectionnez une todo
@@ -47,19 +37,7 @@
             changements, ou créez en une nouvelle pour commencer.
           </p>
           <Button class="w-fit" @click="openCreateTodoModal = true">
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              ></path>
-            </svg>
+            <PlusIcon class="text-white size-6" />
             Créer une nouvelle todo
           </Button>
         </div>
@@ -82,6 +60,7 @@ import { Todo, TodoPriority } from "../todos.type";
 import TodoUpdateForm from "../components/TodoUpdateForm.vue";
 import Button from "@/components/Button.vue";
 import CreateTodoModal from "../components/CreateTodoModal.vue";
+import { ClipboardIcon, PlusIcon } from "@heroicons/vue/24/outline";
 
 const todos = useTodosStore();
 

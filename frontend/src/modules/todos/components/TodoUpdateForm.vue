@@ -19,19 +19,7 @@
         :loading="loading"
         :disabled="loading"
       >
-        <svg
-          class="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-          ></path>
-        </svg>
+        <TrashIcon class="text-red-600 size-5" />
         Supprimer
       </button>
     </div>
@@ -40,23 +28,8 @@
       <div class="max-w-3xl mx-auto space-y-6">
         <TodoPriority :priority="todo.priority" />
 
-        <div
-          v-if="todo.executionDate"
-          class="flex items-center gap-2 text-slate-600"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            ></path>
-          </svg>
+        <div v-if="todo.executionDate" class="flex items-center gap-2">
+          <CalendarIcon class="text-slate-600 size-5" />
           <span>{{ new Date(todo.executionDate).toLocaleString() }}</span>
         </div>
 
@@ -132,6 +105,7 @@ import {
   useFormValidation,
 } from "@/composables/useFormValidation";
 import TextareaInput from "@/components/TextareaInput.vue";
+import { CalendarIcon, TrashIcon } from "@heroicons/vue/24/outline";
 
 interface Props {
   todo: Todo;

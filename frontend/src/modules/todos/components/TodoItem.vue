@@ -25,23 +25,8 @@
         >
           {{ todo.content }}
         </p>
-        <div
-          v-if="todo.executionDate"
-          class="flex items-center gap-1 text-xs text-slate-500"
-        >
-          <svg
-            class="w-3.5 h-3.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            ></path>
-          </svg>
+        <div v-if="todo.executionDate" class="flex items-center gap-1 text-xs">
+          <CalendarIcon class="text-slate-500 size-4" />
           {{ new Date(todo.executionDate).toLocaleString() }}
         </div>
       </div>
@@ -55,6 +40,7 @@ import { Todo } from "../todos.type";
 import { useTodosStore } from "../todos.store";
 import TodoPriority from "./TodoPriority.vue";
 import CheckboxInput from "@/components/CheckboxInput.vue";
+import { CalendarIcon } from "@heroicons/vue/24/outline";
 
 interface Props {
   todo: Todo;

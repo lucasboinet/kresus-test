@@ -34,22 +34,12 @@
               </h2>
               <button
                 @click="closeModal"
-                class="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition"
+                class="p-2 group hover:bg-slate-100 rounded-lg transition"
                 type="button"
               >
-                <svg
-                  class="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
-                </svg>
+                <XMarkIcon
+                  class="size-4 text-slate-600 group-hover:text-slate-800"
+                />
               </button>
             </div>
 
@@ -129,6 +119,7 @@ import {
   useFormValidation,
 } from "@/composables/useFormValidation";
 import TextareaInput from "@/components/TextareaInput.vue";
+import { XMarkIcon } from "@heroicons/vue/24/solid";
 
 const emit = defineEmits(["close", "submit"]);
 const props = defineProps({
