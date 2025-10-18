@@ -4,11 +4,16 @@
   >
     <h3 class="font-medium text-xl">Todo List</h3>
 
-    <button @click="handleLogout">
-      <ArrowLeftStartOnRectangleIcon
-        class="size-5 text-red-500"
-      ></ArrowLeftStartOnRectangleIcon>
-    </button>
+    <div class="flex items-center gap-4">
+      <span class="border rounded bg-slate-50 px-2 shadow-sm">{{
+        auth.user?.email
+      }}</span>
+      <button @click="handleLogout">
+        <ArrowLeftStartOnRectangleIcon
+          class="size-5 text-red-500"
+        ></ArrowLeftStartOnRectangleIcon>
+      </button>
+    </div>
   </div>
 </template>
 
