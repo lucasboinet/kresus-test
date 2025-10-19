@@ -4,14 +4,13 @@ import { Toast, ToastType } from "./toasts.type";
 
 export const useToastStore = defineStore("toast", () => {
   const toasts = ref<Toast[]>([]);
-  let idCounter = 0;
 
   const addToast = (
     message: string,
     type: ToastType = "info",
     duration = 3000
   ) => {
-    const id = idCounter++;
+    const id = new Date().getTime();
     const toast: Toast = { id, message, type, duration };
 
     toasts.value.push(toast);
