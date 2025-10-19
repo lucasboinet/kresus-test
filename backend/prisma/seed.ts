@@ -13,15 +13,16 @@ async function main() {
 
   console.log('Seeding...');
 
-  const user_email = 'toto@kresus.eu';
-  const user_password = 'test';
+  const templateUser = {
+    email: 'toto@kresus.eu',
+    password: 'test',
+    firstName: 'toto',
+    lastName: 'kresus',
+  };
 
-  const encryptedPassword = await bcrypt.hash(user_password, 10);
+  const encryptedPassword = await bcrypt.hash(templateUser.password, 10);
   const user = await prisma.user.create({
-    data: {
-      email: user_email,
-      password: encryptedPassword,
-    },
+    data: { ...templateUser, password: encryptedPassword },
   });
 
   await prisma.todo.create({
