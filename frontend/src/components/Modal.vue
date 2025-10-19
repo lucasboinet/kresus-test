@@ -39,8 +39,12 @@ interface Props {
   open: boolean;
 }
 
+interface Emits {
+  (e: "close"): void;
+}
+
 defineProps<Props>();
-const emit = defineEmits(["close"]);
+const emit = defineEmits<Emits>();
 
 const closeModal = () => emit("close");
 

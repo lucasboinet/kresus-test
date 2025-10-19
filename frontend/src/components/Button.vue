@@ -24,6 +24,10 @@ interface Props {
   type?: "button" | "submit" | "reset";
 }
 
+interface Emits {
+  (e: "click"): void;
+}
+
 defineProps<Props>();
-const emit = defineEmits(["click"]);
+const emit = defineEmits<Emits>();
 </script>

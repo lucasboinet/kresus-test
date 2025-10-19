@@ -21,8 +21,10 @@
 </template>
 
 <script setup lang="ts">
+type ModelValue = string | undefined | null | Date;
+
 interface Props {
-  modelValue: string | undefined | null | Date;
+  modelValue: ModelValue;
   label?: string;
   placeholder?: string;
   type?: string;
@@ -31,6 +33,10 @@ interface Props {
   required?: boolean;
 }
 
+interface Emits {
+  (e: "update:modelValue", modelValue: ModelValue): void;
+}
+
 defineProps<Props>();
-defineEmits(["update:modelValue"]);
+defineEmits<Emits>();
 </script>

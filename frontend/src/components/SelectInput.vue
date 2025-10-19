@@ -21,19 +21,25 @@
 </template>
 
 <script setup lang="ts">
+type ModelValue = string | undefined;
+
 type SelectItem = {
   value: number | string | undefined | boolean;
   label: string;
 };
 
 interface Props {
-  modelValue: string | undefined;
+  modelValue: ModelValue;
   label?: string;
   disabled?: boolean;
   required?: boolean;
   items: SelectItem[];
 }
 
+interface Emits {
+  (e: "update:modelValue", modelValue: ModelValue): void;
+}
+
 defineProps<Props>();
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits<Emits>();
 </script>

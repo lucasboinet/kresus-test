@@ -30,8 +30,12 @@ interface Props {
   disabled?: boolean;
 }
 
+interface Emits {
+  (e: "change", checked: boolean): void;
+}
+
 defineProps<Props>();
-const emit = defineEmits(["change"]);
+const emit = defineEmits<Emits>();
 
 function handleCheckedChange(event: Event) {
   const target = event.target as HTMLInputElement;

@@ -3,9 +3,15 @@ import { reactive, ref } from "vue";
 import api from "@/plugins/axios";
 import { FetchTodosResponse, Todo } from "./todos.type";
 
+interface Pagination {
+  page: number;
+  total: number;
+  hasMore: boolean;
+}
+
 export const useTodosStore = defineStore("todos", () => {
   const todos = ref<Todo[]>([]);
-  const pagination = reactive({
+  const pagination = reactive<Pagination>({
     page: 0,
     total: 0,
     hasMore: true,

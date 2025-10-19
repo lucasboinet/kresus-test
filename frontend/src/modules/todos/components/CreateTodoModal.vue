@@ -89,13 +89,16 @@ import { useToast } from "@/composables/useToast";
 import Modal from "@/components/Modal.vue";
 import { useApiError } from "@/composables/useApiError";
 
-const emit = defineEmits(["close", "submit"]);
-const props = defineProps({
-  open: {
-    type: Boolean,
-    required: true,
-  },
-});
+interface Props {
+  open: boolean;
+}
+
+interface Emits {
+  (e: "close"): void;
+}
+
+const emit = defineEmits<Emits>();
+const props = defineProps<Props>();
 
 const toast = useToast();
 const apiError = useApiError();

@@ -37,7 +37,11 @@ interface Props {
   todos: Todo[];
 }
 
-defineEmits(["select-todo"]);
+interface Emits {
+  (e: "select-todo", todo: Todo): void;
+}
+
+defineEmits<Emits>();
 defineProps<Props>();
 
 const apiError = useApiError();

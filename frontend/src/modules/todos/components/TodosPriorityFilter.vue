@@ -58,7 +58,11 @@ interface Props {
   priority?: TodoPriority;
 }
 
-const emit = defineEmits(["change"]);
+interface Emits {
+  (e: "change", priority: TodoPriority | undefined): void;
+}
+
+const emit = defineEmits<Emits>();
 defineProps<Props>();
 
 function handlePriorityFilterChange(priority?: TodoPriority) {
