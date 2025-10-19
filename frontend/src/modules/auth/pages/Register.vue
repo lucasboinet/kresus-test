@@ -121,13 +121,7 @@ const handleRegister = async () => {
 
   loading.value = true;
   try {
-    await auth.register({
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      password: form.password,
-      confirmPassword: form.confirmPassword,
-    });
+    await auth.register({ ...form });
     router.push("/");
     toast.success("Bienvenue");
   } catch (err) {
