@@ -18,6 +18,7 @@ import {
   CreateTodoPayload,
   UpdateTodoPayload,
 } from './entities/todo.interface';
+import { PaginatedResponse, PaginationPayload } from 'src/shared/interface';
 
 @Controller('todos')
 @UseGuards(AuthGuard('jwt'))
@@ -27,9 +28,9 @@ export class TodosController {
   @Get('/')
   async getTodos(
     @UserDecorator() user,
-    @Query('page', ParseIntPipe) page: number = 1,
-    @Query('limit', ParseIntPipe) limit: number = 15,
+    @Query() pagination: PaginationPayload,
   ): Promise<PaginatedResponse<Todo>> {
+    const { page = 1, limit = 15 } = pagination;
     const offset = (page - 1) * limit;
 
     const { data, total } = await this.todosService.getAllTodos(
