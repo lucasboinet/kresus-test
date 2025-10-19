@@ -1,14 +1,27 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import api from "@/plugins/axios";
 import { Todo } from "./todos.type";
 
 export const useTodosStore = defineStore("todos", () => {
   const todos = ref<Todo[]>([]);
+  const pagination = reactive({
+    page: 0,
+    total: 0,
+    hasMore: true,
+  });
 
-  async function fetchTodos() {
-    const res = await api.get("/todos");
-    todos.value = res.data;
+  async function fetchTodos(limit: number = 15) {
+    if (!pagination.hasMore) return;
+
+    const res = await api.get("/todos", {
+      params: { page: pagination.page + 1, limit },
+    });
+
+    todos.value.push(...res.data.data);
+    pagination.total = res.data.total;
+    pagination.hasMore = res.data.hasMore;
+    pagination.page = res.data.page;
   }
 
   async function updateTodo(todoId: Todo["id"], payload: Partial<Todo>) {
@@ -43,5 +56,6 @@ export const useTodosStore = defineStore("todos", () => {
     updateTodo,
     deleteTodo,
     createTodo,
+    pagination,
   };
 });

@@ -2,8 +2,8 @@
   <span
     class="px-2 py-0.5 text-xs font-medium rounded whitespace-nowrap"
     :class="[
-      PRIORITIES_STYLES[priority].text,
-      PRIORITIES_STYLES[priority].background,
+      PRIORITIES_STYLES[priority]?.text,
+      PRIORITIES_STYLES[priority]?.background,
     ]"
     >{{ TODO_PRIORITIES_NAME[priority] }}</span
   >

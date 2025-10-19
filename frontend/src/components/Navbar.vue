@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sticky shadow top-0 z-50 bg-white flex items-center justify-between gap-2 p-3"
+    class="fixed h-14 shadow top-0 z-50 bg-white flex items-center justify-between gap-2 p-3 w-full"
   >
     <h3 class="font-medium text-xl">Todo List</h3>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-100">
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex h-screen overflow-hidden pt-14">
       <div class="w-96 border-r border-slate-200 bg-white flex flex-col">
         <div class="p-4 border-b border-slate-200">
           <Button @click="openCreateTodoModal = true">
@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import TodosPriorityFilter from "../components/TodosPriorityFilter.vue";
 import TodosList from "../components/TodosList.vue";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useTodosStore } from "../todos.store";
 import { Todo, TodoPriority } from "../todos.type";
 import TodoUpdateForm from "../components/TodoUpdateForm.vue";
@@ -62,33 +62,21 @@ import Button from "@/components/Button.vue";
 import CreateTodoModal from "../components/CreateTodoModal.vue";
 import { ClipboardIcon, PlusIcon } from "@heroicons/vue/24/outline";
 
-const todos = useTodosStore();
+const todoStore = useTodosStore();
 
 const selectedTodoId = ref<number | undefined>(undefined);
 const selectedPriority = ref<TodoPriority | undefined>(undefined);
 const openCreateTodoModal = ref(false);
 
 const selectedTodo = computed(() =>
-  todos.todos.find((todo) => todo.id === selectedTodoId.value),
+  todoStore.todos.find((todo) => todo.id === selectedTodoId.value),
 );
 
 const filteredTodos = computed(() =>
   selectedPriority.value
-    ? todos.todos.filter((t) => t.priority === selectedPriority.value)
-    : todos.todos,
+    ? todoStore.todos.filter((t) => t.priority === selectedPriority.value)
+    : todoStore.todos,
 );
-
-onMounted(() => {
-  fetchTodos();
-});
-
-async function fetchTodos() {
-  try {
-    await todos.fetchTodos();
-  } catch (err) {
-    console.log(err);
-  }
-}
 
 function handleSelectTodo(todo: Todo) {
   selectedTodoId.value = todo.id;
