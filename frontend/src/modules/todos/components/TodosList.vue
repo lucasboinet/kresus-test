@@ -67,7 +67,7 @@ function initIntersectionObserver() {
         !loading.value &&
         todoStore.pagination.hasMore
       ) {
-        todoStore.fetchTodos();
+        fetchTodos();
       }
     },
     {
@@ -83,6 +83,7 @@ function initIntersectionObserver() {
 }
 
 onMounted(() => {
+  todoStore.resetPagination();
   fetchTodos();
 
   initIntersectionObserver();

@@ -143,7 +143,6 @@ const handleSubmit = async () => {
 
     await todos.createTodo(data);
     toast.success("Todo crée avec succès");
-    closeModal();
   } catch (error) {
     if (axios.isAxiosError(error)) {
       toast.error(error.response?.data?.message);
@@ -154,6 +153,7 @@ const handleSubmit = async () => {
     }
   } finally {
     loading.value = false;
+    closeModal();
   }
 };
 

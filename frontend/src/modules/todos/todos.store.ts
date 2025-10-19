@@ -50,6 +50,13 @@ export const useTodosStore = defineStore("todos", () => {
     todos.value = [...todos.value, res.data];
   }
 
+  function resetPagination() {
+    pagination.page = 0;
+    pagination.hasMore = true;
+    pagination.total = 0;
+    todos.value = [];
+  }
+
   return {
     todos,
     fetchTodos,
@@ -57,5 +64,6 @@ export const useTodosStore = defineStore("todos", () => {
     deleteTodo,
     createTodo,
     pagination,
+    resetPagination,
   };
 });
