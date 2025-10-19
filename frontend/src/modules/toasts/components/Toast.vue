@@ -45,7 +45,7 @@ import {
   InformationCircleIcon,
   XMarkIcon,
 } from "@heroicons/vue/24/solid";
-import { Component } from "vue";
+import type { Component } from "vue";
 import { ToastType } from "@/modules/toasts/toasts.type";
 import { useToastStore } from "@/modules/toasts/toasts.store";
 
