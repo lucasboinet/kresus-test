@@ -39,7 +39,6 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "@/modules/auth/auth.store";
-import axios from "axios";
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import Button from "@/components/Button.vue";
@@ -50,11 +49,13 @@ import {
   useFormValidation,
 } from "@/composables/useFormValidation";
 import { useToast } from "@/composables/useToast";
+import { useApiError } from "@/composables/useApiError";
 
 const loading = ref(false);
 const router = useRouter();
 const auth = useAuthStore();
 const toast = useToast();
+const apiError = useApiError();
 
 const form = reactive({
   email: "",
@@ -81,11 +82,7 @@ const handleLogin = async () => {
     router.push("/");
     toast.success("Connecté avec succès");
   } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      toast.error(err.response?.data?.message);
-    } else {
-      toast.error("La connection à échoué, veuillez réessayer");
-    }
+    apiError.handle(err, "La connection à échoué, veuillez réessayer");
   } finally {
     loading.value = false;
   }

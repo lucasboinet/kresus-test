@@ -31,7 +31,7 @@ import { ClipboardDocumentListIcon } from "@heroicons/vue/24/solid";
 import { onMounted, ref } from "vue";
 import { useTodosStore } from "../todos.store";
 import { CubeTransparentIcon } from "@heroicons/vue/24/outline";
-import { useToast } from "@/composables/useToast";
+import { useApiError } from "@/composables/useApiError";
 
 interface Props {
   todos: Todo[];
@@ -40,7 +40,7 @@ interface Props {
 defineEmits(["select-todo"]);
 defineProps<Props>();
 
-const toast = useToast();
+const apiError = useApiError();
 const todoStore = useTodosStore();
 
 const loading = ref(false);
@@ -52,7 +52,10 @@ async function fetchTodos() {
   try {
     await todoStore.fetchTodos();
   } catch (err) {
-    toast.error("Un problème est survenu lors de la récupération des todos");
+    apiError.handle(
+      err,
+      "Un problème est survenu lors de la récupération des todos",
+    );
   } finally {
     loading.value = false;
   }

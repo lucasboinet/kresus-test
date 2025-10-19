@@ -79,7 +79,6 @@ import {
   TODO_DESCRIPTION_LENGTH,
   TODO_TITLE_LENGTH,
 } from "../todos.constants";
-import axios from "axios";
 import {
   FORM_VALIDATION_RULES,
   useFormValidation,
@@ -88,6 +87,7 @@ import TextareaInput from "@/components/TextareaInput.vue";
 import { XMarkIcon } from "@heroicons/vue/24/solid";
 import { useToast } from "@/composables/useToast";
 import Modal from "@/components/Modal.vue";
+import { useApiError } from "@/composables/useApiError";
 
 const emit = defineEmits(["close", "submit"]);
 const props = defineProps({
@@ -98,6 +98,7 @@ const props = defineProps({
 });
 
 const toast = useToast();
+const apiError = useApiError();
 const todos = useTodosStore();
 const loading = ref(false);
 
@@ -143,14 +144,11 @@ const handleSubmit = async () => {
 
     await todos.createTodo(data);
     toast.success("Todo crée avec succès");
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      toast.error(error.response?.data?.message);
-    } else {
-      toast.error(
-        "Une erreur innatendu s'est produit lors de la création de la todo",
-      );
-    }
+  } catch (err) {
+    apiError.handle(
+      err,
+      "Une erreur innatendu s'est produit lors de la création de la todo",
+    );
   } finally {
     loading.value = false;
     closeModal();

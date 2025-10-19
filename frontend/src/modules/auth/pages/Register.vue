@@ -64,12 +64,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import Button from "@/components/Button.vue";
-import axios from "axios";
 import TextInput from "@/components/TextInput.vue";
 import Card from "@/components/Card.vue";
 import { PASSWORD_LENGTH } from "../auth.constants";
@@ -78,6 +77,7 @@ import {
   useFormValidation,
 } from "@/composables/useFormValidation";
 import { useToast } from "@/composables/useToast";
+import { useApiError } from "@/composables/useApiError";
 
 const form = reactive({
   firstName: "",
@@ -111,6 +111,7 @@ const loading = ref(false);
 const router = useRouter();
 const auth = useAuthStore();
 const toast = useToast();
+const apiError = useApiError();
 
 const handleRegister = async () => {
   resetErrors();
@@ -125,11 +126,7 @@ const handleRegister = async () => {
     router.push("/");
     toast.success("Bienvenue");
   } catch (err) {
-    if (axios.isAxiosError(err)) {
-      toast.error(err.response?.data?.message);
-    } else {
-      toast.error("L'enregistrement à échoué, veuillez réessayer");
-    }
+    apiError.handle(err, "L'enregistrement à échoué, veuillez réessayer");
   } finally {
     loading.value = false;
   }
