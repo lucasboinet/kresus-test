@@ -96,11 +96,16 @@ export const FORM_VALIDATION_RULES = {
     message,
   }),
 
-  match: <T>(
-    otherValue: T,
+  match: <T = string>(
+    otherValueOrGetter: T | (() => T),
     message = "Les valeurs ne correspondent pas"
   ): FormValidationRule<T> => ({
-    validate: (value) => value === otherValue,
+    validate: (value) => {
+      if (typeof otherValueOrGetter === "function") {
+        return (otherValueOrGetter as () => T)() === value;
+      }
+      return otherValueOrGetter === value;
+    },
     message,
   }),
 };

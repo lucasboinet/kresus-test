@@ -5,9 +5,11 @@
     <h3 class="font-medium text-xl">Todo List</h3>
 
     <div class="flex items-center gap-4">
-      <span class="border rounded bg-slate-50 px-2 shadow-sm">{{
-        auth.user?.email
-      }}</span>
+      <span
+        class="border rounded bg-slate-50 px-2 shadow-sm"
+        :title="auth.user?.email"
+        >{{ auth.user?.firstName }} {{ auth.user?.lastName }}</span
+      >
       <button @click="handleLogout">
         <ArrowLeftStartOnRectangleIcon
           class="size-5 text-red-500"

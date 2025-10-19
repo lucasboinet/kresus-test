@@ -5,6 +5,24 @@
         <h2 class="text-2xl font-semibold mb-4 text-center">Créer un compte</h2>
 
         <div class="space-y-3 mb-6">
+          <div class="flex gap-3">
+            <TextInput
+              v-model="form.firstName"
+              label="Prénom"
+              placeholder="Toto"
+              :error="getError('firstName')"
+              :disabled="loading"
+            />
+
+            <TextInput
+              v-model="form.lastName"
+              label="Nom"
+              placeholder="Kresus"
+              :error="getError('lastName')"
+              :disabled="loading"
+            />
+          </div>
+
           <TextInput
             v-model="form.email"
             label="Email"
@@ -62,12 +80,16 @@ import {
 import { useToast } from "@/composables/useToast";
 
 const form = reactive({
+  firstName: "",
+  lastName: "",
   email: "",
   password: "",
   confirmPassword: "",
 });
 
 const { getError, validateForm, resetErrors } = useFormValidation(form, {
+  firstName: [FORM_VALIDATION_RULES.required("Le prénom est requis")],
+  lastName: [FORM_VALIDATION_RULES.required("Le nom est requis")],
   email: [
     FORM_VALIDATION_RULES.required("L'email est requis"),
     FORM_VALIDATION_RULES.email(),
@@ -79,7 +101,7 @@ const { getError, validateForm, resetErrors } = useFormValidation(form, {
   confirmPassword: [
     FORM_VALIDATION_RULES.required("Veuillez confirmer votre mot de passe"),
     FORM_VALIDATION_RULES.match(
-      form.confirmPassword,
+      () => form.password,
       "Les mots de passe ne correspondent pas",
     ),
   ],
@@ -100,9 +122,11 @@ const handleRegister = async () => {
   loading.value = true;
   try {
     await auth.register({
-      email: email.value,
-      password: password.value,
-      confirmPassword: confirmPassword.value,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      password: form.password,
+      confirmPassword: form.confirmPassword,
     });
     router.push("/");
     toast.success("Bienvenue");
