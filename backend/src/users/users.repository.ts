@@ -13,14 +13,28 @@ export class UserRepository {
   findById(id: number) {
     return this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, email: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
   create(data: CreateUserPayload) {
     return this.prisma.user.create({
       data: { ...data },
-      select: { id: true, email: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 }

@@ -18,6 +18,8 @@ export class UsersService {
   async createUser(data: CreateUserPayload) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     return this.userRepository.create({
+      firstName: data.firstName,
+      lastName: data.lastName,
       email: data.email,
       password: hashedPassword,
     });

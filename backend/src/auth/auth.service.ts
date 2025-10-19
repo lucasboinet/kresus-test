@@ -38,7 +38,13 @@ export class AuthService {
     return new LoginResponse(this.jwt.sign(payload), user);
   }
 
-  async register({ email, password, confirmPassword }: RegisterPayload) {
+  async register({
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+  }: RegisterPayload) {
     const existing = await this.usersService.findByEmail(email);
     if (existing) throw new ConflictException('Email already in use');
 
@@ -46,10 +52,17 @@ export class AuthService {
       throw new BadRequestException("Password and confirmation don't match");
 
     const user = await this.usersService.createUser({
+      firstName,
+      lastName,
       email,
       password,
     });
-    const payload = { sub: user.id, email: user.email };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
 
     return new RegisterResponse(this.jwt.sign(payload), user);
   }
