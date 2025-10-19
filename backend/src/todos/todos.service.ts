@@ -26,6 +26,10 @@ export class TodosService {
     return { data, total };
   }
 
+  findById(todoId: number): Promise<Todo | null> {
+    return this.todoRepository.findById(todoId);
+  }
+
   async createTodo(userId: number, data: CreateTodoPayload): Promise<Todo> {
     const exisitingTodo = await this.todoRepository.findByTitle(
       userId,
@@ -38,27 +42,11 @@ export class TodosService {
     return this.todoRepository.create(userId, data);
   }
 
-  async updateTodo(
-    userId: number,
-    todoId: number,
-    data: UpdateTodoPayload,
-  ): Promise<Todo> {
-    const todo = await this.todoRepository.findById(todoId);
-
-    if (!todo) throw new NotFoundException('Todo not found');
-
-    if (todo.userId !== userId) throw new ForbiddenException('Not allowed');
-
+  async updateTodo(todoId: number, data: UpdateTodoPayload): Promise<Todo> {
     return this.todoRepository.update(todoId, data);
   }
 
-  async deleteTodo(userId: number, todoId: number): Promise<void> {
-    const todo = await this.todoRepository.findById(todoId);
-
-    if (!todo) throw new NotFoundException('Todo not found');
-
-    if (todo.userId !== userId) throw new ForbiddenException('Not allowed');
-
+  async deleteTodo(todoId: number): Promise<void> {
     await this.todoRepository.delete(todoId);
   }
 }

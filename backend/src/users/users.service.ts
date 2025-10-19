@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserRepository } from './users.repository';
 import { CreateUserPayload } from './entities/users.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly configService: ConfigService,
+  ) {}
 
   async findByEmail(email: string) {
     return this.userRepository.findByEmail(email);
@@ -16,7 +20,11 @@ export class UsersService {
   }
 
   async createUser(data: CreateUserPayload) {
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const saltRounds = this.configService.get<number>(
+      'security.bcryptSaltOrRound',
+    );
+    console.log({ saltRounds });
+    const hashedPassword = await bcrypt.hash(data.password, saltRounds);
     return this.userRepository.create({
       firstName: data.firstName,
       lastName: data.lastName,

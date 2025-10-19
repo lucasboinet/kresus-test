@@ -1,4 +1,5 @@
 import { IsInt, IsOptional, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export interface PaginatedResponse<T> {
   data: T[];
@@ -9,11 +10,13 @@ export interface PaginatedResponse<T> {
 
 export class PaginationPayload {
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
-  @Min(1)
+  @Min(0)
   page?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   limit?: number;

@@ -19,6 +19,7 @@ import {
   UpdateTodoPayload,
 } from './entities/todo.interface';
 import { PaginatedResponse, PaginationPayload } from 'src/shared/interface';
+import { TodoOwnerGuard } from './todos.guards';
 
 @Controller('todos')
 @UseGuards(AuthGuard('jwt'))
@@ -56,20 +57,22 @@ export class TodosController {
   }
 
   @Put('/:id')
+  @UseGuards(TodoOwnerGuard)
   updateTodo(
     @UserDecorator() user,
     @Param('id', ParseIntPipe) todoId: number,
     @Body() updatePayload: UpdateTodoPayload,
   ): Promise<Todo> {
-    return this.todosService.updateTodo(user.id, todoId, updatePayload);
+    return this.todosService.updateTodo(todoId, updatePayload);
   }
 
   @Delete('/:id')
+  @UseGuards(TodoOwnerGuard)
   async deleteTodo(
     @UserDecorator() user,
     @Param('id', ParseIntPipe) todoId: number,
   ): Promise<{ message: string }> {
-    await this.todosService.deleteTodo(user.id, todoId);
+    await this.todosService.deleteTodo(todoId);
     return { message: 'Todo deleted successfully' };
   }
 }
