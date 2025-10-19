@@ -41,7 +41,6 @@ export class TodosController {
     return {
       data,
       page,
-      limit,
       total,
       hasMore: offset + limit < total,
     };
