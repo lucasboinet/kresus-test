@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
 import api from "@/plugins/axios";
-import { Todo } from "./todos.type";
+import { FetchTodosResponse, Todo } from "./todos.type";
 
 export const useTodosStore = defineStore("todos", () => {
   const todos = ref<Todo[]>([]);
@@ -14,7 +14,7 @@ export const useTodosStore = defineStore("todos", () => {
   async function fetchTodos(limit: number = 15) {
     if (!pagination.hasMore) return;
 
-    const res = await api.get("/todos", {
+    const res = await api.get<FetchTodosResponse>("/todos", {
       params: { page: pagination.page + 1, limit },
     });
 
@@ -25,7 +25,7 @@ export const useTodosStore = defineStore("todos", () => {
   }
 
   async function updateTodo(todoId: Todo["id"], payload: Partial<Todo>) {
-    const res = await api.put(`/todos/${todoId}`, {
+    const res = await api.put<Todo>(`/todos/${todoId}`, {
       ...payload,
       ...(payload.executionDate
         ? { executionDate: new Date(payload.executionDate).toISOString() }
@@ -41,7 +41,7 @@ export const useTodosStore = defineStore("todos", () => {
   }
 
   async function createTodo(payload: Partial<Todo>) {
-    const res = await api.post(`/todos`, {
+    const res = await api.post<Todo>(`/todos`, {
       ...payload,
       executionDate: payload.executionDate
         ? new Date(payload.executionDate).toISOString()

@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { User } from "@/types/user.types";
 import { LoginPayload, RegisterPayload } from "@/modules/auth/auth.types";
 import api from "@/plugins/axios";
+import { AuthResponse } from "./auth.types";
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<User | undefined>(undefined);
@@ -11,21 +12,21 @@ export const useAuthStore = defineStore("auth", () => {
   const isAuthenticated = computed(() => !!access_token.value);
 
   async function login(payload: LoginPayload) {
-    const res = await api.post("/auth/login", { ...payload });
+    const res = await api.post<AuthResponse>("/auth/login", { ...payload });
     access_token.value = res.data.access_token;
     user.value = res.data.user;
     localStorage.setItem("token", access_token.value || "");
   }
 
   async function register(payload: RegisterPayload) {
-    const res = await api.post("/auth/register", { ...payload });
+    const res = await api.post<AuthResponse>("/auth/register", { ...payload });
     access_token.value = res.data.access_token;
     user.value = res.data.user;
     localStorage.setItem("token", access_token.value || "");
   }
 
   async function fetchUser() {
-    const res = await api.get("/auth/me");
+    const res = await api.get<User>("/auth/me");
     user.value = res.data;
   }
 

@@ -13,3 +13,10 @@ export enum TodoPriority {
   MEDIUM = "MEDIUM",
   HIGH = "HIGH",
 }
+
+export type FetchTodosResponse = {
+  data: Todo[];
+  total: number;
+  hasMore: boolean;
+  page: number;
+};
