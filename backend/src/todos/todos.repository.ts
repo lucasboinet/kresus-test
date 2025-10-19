@@ -10,8 +10,16 @@ import {
 export class TodoRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll(userId: number): Promise<Todo[]> {
-    return this.prisma.todo.findMany({ where: { userId } });
+  findAll(userId: number, offset: number, limit: number): Promise<Todo[]> {
+    return this.prisma.todo.findMany({
+      where: { userId },
+      skip: offset,
+      take: limit,
+    });
+  }
+
+  countAll(userId: number): Promise<number> {
+    return this.prisma.todo.count({ where: { userId } });
   }
 
   findById(id: number): Promise<Todo | null> {

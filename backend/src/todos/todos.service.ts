@@ -15,8 +15,15 @@ import { TodoRepository } from './todos.repository';
 export class TodosService {
   constructor(private readonly todoRepository: TodoRepository) {}
 
-  getAllTodos(userId: number): Promise<Todo[]> {
-    return this.todoRepository.findAll(userId);
+  async getAllTodos(
+    userId: number,
+    offset: number,
+    limit: number,
+  ): Promise<{ data: Todo[]; total: number }> {
+    const data = await this.todoRepository.findAll(userId, offset, limit);
+    const total = await this.todoRepository.countAll(userId);
+
+    return { data, total };
   }
 
   async createTodo(userId: number, data: CreateTodoPayload): Promise<Todo> {

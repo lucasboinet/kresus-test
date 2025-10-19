@@ -25,24 +25,18 @@ async function main() {
     data: { ...templateUser, password: encryptedPassword },
   });
 
-  await prisma.todo.create({
-    data: {
-      userId: user.id,
-      title: 'Todo1',
-      priority: TodoPriority.HIGH,
-      executionDate: new Date('2021-10-01'),
-      content: 'lorem ipsum dolor sit amet',
-    },
+  await prisma.todo.createMany({
+    data: [
+      ...Array.from({ length: 50 }, (_, i) => ({
+        userId: user.id,
+        title: `Todo${i}`,
+        priority: TodoPriority.HIGH,
+        executionDate: new Date('2021-10-01'),
+        content: 'lorem ipsum dolor sit amet',
+      })),
+    ],
   });
-  await prisma.todo.create({
-    data: {
-      userId: user.id,
-      title: 'Todo2',
-      priority: TodoPriority.MEDIUM,
-      executionDate: new Date('2021-10-02'),
-      content: 'lorem ipsum dolor sit amet',
-    },
-  });
+
   console.log('Seeding completed.');
 }
 

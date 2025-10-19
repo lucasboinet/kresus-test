@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -24,8 +25,26 @@ export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
   @Get('/')
-  getTodos(@UserDecorator() user): Promise<Todo[]> {
-    return this.todosService.getAllTodos(user.id);
+  async getTodos(
+    @UserDecorator() user,
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 15,
+  ): Promise<PaginatedResponse<Todo>> {
+    const offset = (page - 1) * limit;
+
+    const { data, total } = await this.todosService.getAllTodos(
+      user.id,
+      offset,
+      limit,
+    );
+
+    return {
+      data,
+      page,
+      limit,
+      total,
+      hasMore: offset + limit < total,
+    };
   }
 
   @Post('/')
